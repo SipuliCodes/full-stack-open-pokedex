@@ -19,10 +19,12 @@ jobs:
       - run: npm run build
       - run: npm run test
       - name: e2e tests
+        env: 
+          DEBUG: 'cypress:*'
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
           build: npm run build
-          command: DEBUG=cypress:* npm run test:e2e
+          command: npm run test:e2e
           start: npm run start-prod
           wait-on: http://localhost:5000
