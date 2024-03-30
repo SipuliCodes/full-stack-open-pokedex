@@ -23,6 +23,6 @@ jobs:
         with:
           browser: chrome
           build: npm run build
-          command: npm run test:e2e
+          command: DEBUG=cypress:* npm run test:e2e
           start: npm run start-prod
           wait-on: http://localhost:5000
