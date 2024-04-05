@@ -44,6 +44,15 @@ jobs:
           text: 'A new version deployed'
           description: 'https://full-stack-open-pokedex-a21x.onrender.com/'
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Failure notification 
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ failure() }}
+        with:
+          severity: error
+          color: '#000000'
+          text: 'Build failed'
+          description: env.URL
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
   tag_release:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-22.04
@@ -58,15 +67,6 @@ jobs:
           URL: ${{ toJson(github.event.commits[0].url)}}
         if: ${{ github.event_name == 'push' && !contains(join(env.COMMIT_MESSAGES), 'skip') }}
         uses: anothrNick/github-tag-action@1.64.0
-      - name: Failure notification 
-        uses: rjstone/discord-webhook-notify@v1
-        if: ${{ failure() }}
-        with:
-          severity: error
-          color: '#000000'
-          text: 'Build failed'
-          description: env.URL
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       
         
         
