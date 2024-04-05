@@ -37,7 +37,7 @@ jobs:
           severity: error
           color: '#000000'
           text: 'Build failed'
-          description: env.URL
+          description: ${{ env.URL }}
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Trigger deployment
         env:
