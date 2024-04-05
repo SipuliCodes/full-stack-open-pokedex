@@ -19,8 +19,8 @@ jobs:
           node-version: '20'
       - run: npm install
       - run: npm run eslint
-        uses: rjstone/discord-webhook-notify@v1
         if: ${{ failure() }}
+        use: rjstone/discord-webhook-notify@v1
         with:
           severity: error
           color: '#000000'
