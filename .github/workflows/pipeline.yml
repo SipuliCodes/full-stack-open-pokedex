@@ -19,6 +19,14 @@ jobs:
           node-version: '20'
       - run: npm install
       - run: npm run eslint
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ failure() }}
+        with:
+          severity: error
+          color: '#000000'
+          text: 'Linting failed'
+          description: env.URL
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - run: npm run build
       - run: npm run test
       - name: e2e tests
@@ -54,14 +62,6 @@ jobs:
           URL: ${{ toJson(github.event.commits[0].url)}}
         if: ${{ github.event_name == 'push' && !contains(join(env.COMMIT_MESSAGES), 'skip') }}
         uses: anothrNick/github-tag-action@1.64.0
-      - uses: rjstone/discord-webhook-notify@v1
-        if: ${{ failure() }}
-        with:
-          severity: error
-          color: '#000000'
-          text: 'Build failed'
-          description: env.URL
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       
         
         
