@@ -51,6 +51,7 @@ jobs:
           DEFAULT_BUMP: patch
           COMMITTER: ${{ toJson(github.event.commits[0].committer.username) }}
           URL: ${{ toJson(github.event.commits[0].url)}}
+        uses: rjstone/discord-webhook-notify@v1
         if: ${{ failure() }}
         with:
           severity: error
@@ -58,7 +59,7 @@ jobs:
           description: 'commit ' + env.URL + ' by ' + env.COMMITTER + 'failed'
         if: ${{ github.event_name == 'push' && !contains(join(env.COMMIT_MESSAGES), 'skip') }}
         uses: anothrNick/github-tag-action@1.64.0
-        uses: rjstone/discord-webhook-notify@v1
+        
         
 
 
