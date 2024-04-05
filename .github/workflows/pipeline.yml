@@ -19,18 +19,23 @@ jobs:
           node-version: '20'
       - run: npm install
       - run: npm run eslint
-        continue-on-error: true
       - run: npm run build
-        continue-on-error: true
       - run: npm run test
-        continue-on-error: true
       - name: e2e tests
-        continue-on-error: true
         uses: cypress-io/github-action@v5
         with:
           command: npm run test:e2e
           start: npm run start-prod
           wait-on: http://localhost:5000
+      - name: Failure notification 
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ failure() }}
+        with:
+          severity: error
+          color: '#000000'
+          text: 'Build failed'
+          description: env.URL
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Trigger deployment
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
@@ -43,15 +48,6 @@ jobs:
           color: '#ffffff'
           text: 'A new version deployed'
           description: 'https://full-stack-open-pokedex-a21x.onrender.com/'
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      - name: Failure notification 
-        uses: rjstone/discord-webhook-notify@v1
-        if: ${{ failure() }}
-        with:
-          severity: error
-          color: '#000000'
-          text: 'Build failed'
-          description: env.URL
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
   tag_release:
     needs: [simple_deployment_pipeline]
