@@ -30,7 +30,7 @@ jobs:
       - name: Failure notification 
         env: 
           COMMITTER: ${{ toJson(github.event.commits[0].committer.username) }}
-          URL: ${{ toJson(github.event.commits[0].url)}}
+          URL: ${{ toJson(github.event.commits)[0].url }}
         uses: rjstone/discord-webhook-notify@v1
         if: ${{ failure() }}
         with:
