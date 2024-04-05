@@ -39,6 +39,7 @@ jobs:
           color: '#ffffff'
           text: 'A new version deployed'
           description: 'https://full-stack-open-pokedex-a21x.onrender.com/'
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
   tag_release:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-22.04
@@ -59,6 +60,7 @@ jobs:
           severity: error
           text: 'build failed'
           description: 'commit ' + env.URL + ' by ' + env.COMMITTER + 'failed'
+          webhookUrl: ${{ secrets.DISCORD_HOOK }}
         
         
 
