@@ -32,7 +32,7 @@ jobs:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         if: ${{ github.event_name == 'push' && !contains(join(env.COMMIT_MESSAGES), 'skip') }}
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
-        uses: rjstone/discord-webhook-notify@v1
+      - uses: rjstone/discord-webhook-notify@v1
         if: ${{ success() }}
         with:
           severity: info
@@ -54,7 +54,13 @@ jobs:
           URL: ${{ toJson(github.event.commits[0].url)}}
         if: ${{ github.event_name == 'push' && !contains(join(env.COMMIT_MESSAGES), 'skip') }}
         uses: anothrNick/github-tag-action@1.64.0
-        
+      - uses: rjstone/discord-webhook-notify@v1
+        if: ${{ failure() }}
+        with:
+          severity: error
+          text: 'build failed'
+          description: 'commit ' + env.URL + ' by ' + env.COMMITTER + 'failed'
+          webhookUrl: ${{ secrets.DISCORD_HOOK }}
         
         
 
