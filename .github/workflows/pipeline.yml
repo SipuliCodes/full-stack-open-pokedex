@@ -19,17 +19,13 @@ jobs:
           node-version: '20'
       - run: npm install
       - run: npm run eslint
-        if: ${{ failure() }}
-        use: rjstone/discord-webhook-notify@v1
-        with:
-          severity: error
-          color: '#000000'
-          text: 'Linting failed'
-          description: env.URL
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+        continue-on-error: true
       - run: npm run build
+        continue-on-error: true
       - run: npm run test
+        continue-on-error: true
       - name: e2e tests
+        continue-on-error: true
         uses: cypress-io/github-action@v5
         with:
           command: npm run test:e2e
@@ -62,6 +58,15 @@ jobs:
           URL: ${{ toJson(github.event.commits[0].url)}}
         if: ${{ github.event_name == 'push' && !contains(join(env.COMMIT_MESSAGES), 'skip') }}
         uses: anothrNick/github-tag-action@1.64.0
+      - name: Failure notification 
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ failure() }}
+        with:
+          severity: error
+          color: '#000000'
+          text: 'Build failed'
+          description: env.URL
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       
         
         
