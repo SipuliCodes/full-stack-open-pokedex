@@ -28,6 +28,9 @@ jobs:
           start: npm run start-prod
           wait-on: http://localhost:5000
       - name: Failure notification 
+        env: 
+          COMMITTER: ${{ toJson(github.event.commits[0].committer.username) }}
+          URL: ${{ toJson(github.event.commits[0].url)}}
         uses: rjstone/discord-webhook-notify@v1
         if: ${{ failure() }}
         with:
@@ -59,8 +62,6 @@ jobs:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
-          COMMITTER: ${{ toJson(github.event.commits[0].committer.username) }}
-          URL: ${{ toJson(github.event.commits[0].url)}}
         if: ${{ github.event_name == 'push' && !contains(join(env.COMMIT_MESSAGES), 'skip') }}
         uses: anothrNick/github-tag-action@1.64.0
       
